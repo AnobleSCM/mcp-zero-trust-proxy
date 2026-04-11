@@ -16,260 +16,386 @@
 <meta name="twitter:title" content="MCP Zero-Trust Proxy — Open-Source Security for MCP Servers">
 <meta name="twitter:description" content="Open-source reverse proxy that adds authentication, access control, and audit logging to any MCP server. One Docker command, zero code changes. MIT licensed.">
 <meta name="robots" content="index, follow">
-<meta name="keywords" content="MCP, Model Context Protocol, security, proxy, OAuth, RBAC, audit, Claude, Cursor, Copilot, zero trust, authentication">
+<meta name="keywords" content="MCP, Model Context Protocol, security, proxy, OAuth, RBAC, audit, Claude, Cursor, Copilot, zero trust, authentication, open source">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  /* =============================================
+     MERCURY-STYLE DESIGN SYSTEM
+     Warm cream editorial. Generous whitespace.
+     Serif headings. Clean sans body. No noise.
+     ============================================= */
   :root {
-    --cream: #faf9f6;
-    --cream-dark: #f2f0eb;
-    --cream-border: #e8e4dc;
-    --navy: #1a1f2e;
-    --navy-light: #2d3452;
-    --ink: #1a1a1a;
-    --ink-muted: #4a4a4a;
-    --ink-faint: #858585;
-    --accent: #3d5a8a;
-    --accent-hover: #2e4570;
-    --accent-light: #edf0f7;
-    --sage: #4a7c59;
-    --sage-light: #edf4ef;
-    --rust: #8b3a3a;
-    --rust-light: #f5eded;
-    --amber: #8b6914;
-    --amber-light: #faf4e6;
-    --white: #ffffff;
+    /* Backgrounds */
+    --paper: #faf8f4;
+    --paper-warm: #f4f1eb;
+    --paper-dim: #edeae3;
+    --paper-border: #e4e0d8;
+
+    /* Ink */
+    --ink: #1a1a18;
+    --ink-mid: #3d3d38;
+    --ink-soft: #6b6960;
+    --ink-faint: #a09d96;
+
+    /* Navy (accent surfaces) */
+    --navy: #1c2235;
+    --navy-mid: #2a3350;
+
+    /* Accent */
+    --accent: #3557a0;
+    --accent-warm: #2e4888;
+    --accent-tint: #edf1fa;
+
+    /* Semantic */
+    --green: #3e7a52;
+    --green-tint: #edf5f0;
+    --amber: #8a6515;
+    --amber-tint: #faf3e0;
+    --rust: #8a3535;
+    --rust-tint: #f7eeee;
+
+    /* Surfaces */
     --surface: #ffffff;
-    --shadow-xs: 0 1px 3px rgba(0,0,0,0.06);
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.07);
+    --surface-raised: #fdfcf9;
+
+    /* Shadows */
+    --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html { scroll-behavior: smooth; }
+
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    background: var(--cream);
+    background: var(--paper);
     color: var(--ink);
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
   }
 
   .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+  .container-narrow { max-width: 760px; margin: 0 auto; padding: 0 32px; }
 
-  /* NAV */
+  /* =============================================
+     NAVIGATION
+     ============================================= */
   nav {
-    padding: 22px 0;
-    border-bottom: 1px solid var(--cream-border);
-    position: sticky; top: 0;
-    background: rgba(250, 249, 246, 0.96);
-    backdrop-filter: blur(12px);
+    padding: 20px 0;
+    border-bottom: 1px solid var(--paper-border);
+    position: sticky;
+    top: 0;
+    background: rgba(250, 248, 244, 0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     z-index: 100;
   }
   nav .container { display: flex; justify-content: space-between; align-items: center; }
+
   .logo {
     font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 400;
     letter-spacing: -0.2px;
     color: var(--navy);
+    text-decoration: none;
   }
-  .logo span { color: var(--accent); }
-  nav a.cta-nav {
-    background: var(--navy); color: var(--white);
-    padding: 9px 22px; border-radius: 6px; text-decoration: none;
-    font-size: 13px; font-weight: 600; letter-spacing: 0.1px;
-    transition: background 0.2s;
+  .logo em {
+    font-style: italic;
+    color: var(--accent);
   }
-  nav a.cta-nav:hover { background: var(--navy-light); }
 
-  /* HERO */
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .nav-link {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .nav-link:hover { color: var(--ink); }
+
+  .btn-nav {
+    background: var(--navy);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-nav:hover { background: var(--navy-mid); }
+  .btn-nav svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* =============================================
+     HERO
+     ============================================= */
   .hero {
-    padding: 120px 0 100px;
+    padding: 108px 0 96px;
     text-align: center;
   }
+
   .hero-badge {
-    display: inline-block;
-    background: var(--rust-light);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--rust-tint);
     color: var(--rust);
     padding: 5px 14px;
     border-radius: 4px;
     font-size: 12px;
     font-weight: 600;
-    margin-bottom: 32px;
+    margin-bottom: 36px;
     letter-spacing: 0.4px;
     text-transform: uppercase;
-    border: 1px solid rgba(139, 58, 58, 0.15);
+    border: 1px solid rgba(138, 53, 53, 0.12);
   }
+
   .hero h1 {
     font-family: 'DM Serif Display', Georgia, serif;
-    font-size: clamp(42px, 5.5vw, 64px);
+    font-size: clamp(44px, 5.8vw, 68px);
     font-weight: 400;
     font-style: normal;
-    line-height: 1.08;
-    letter-spacing: -1px;
-    margin-bottom: 24px;
-    max-width: 820px;
-    margin-left: auto; margin-right: auto;
+    line-height: 1.07;
+    letter-spacing: -1.5px;
+    margin-bottom: 26px;
     color: var(--navy);
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
   }
   .hero h1 em {
     font-style: italic;
     color: var(--accent);
   }
-  .hero p.sub {
+
+  .hero-sub {
     font-size: 19px;
-    color: var(--ink-muted);
-    max-width: 580px;
-    margin: 0 auto 48px;
+    color: var(--ink-soft);
+    max-width: 560px;
+    margin: 0 auto 52px;
     line-height: 1.6;
     font-weight: 400;
   }
 
-  /* CODE BLOCK */
+  /* Code block */
   .code-block {
     background: var(--navy);
-    color: #e2e8f0;
-    border: 1px solid rgba(0,0,0,0.12);
-    border-radius: 8px;
-    padding: 24px 32px;
+    color: #dde4f0;
+    border-radius: 10px;
+    padding: 24px 30px;
     max-width: 660px;
     margin: 0 auto 52px;
     text-align: left;
-    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
     font-size: 13px;
-    line-height: 1.7;
+    line-height: 1.75;
     overflow-x: auto;
+    box-shadow: var(--shadow-card);
+  }
+  .code-block .line { display: block; }
+  .code-comment { color: #7a8eac; }
+  .code-cmd { color: #89b4f7; }
+  .code-flag { color: #d4b87a; }
+  .code-string { color: #a8d4a0; }
+
+  /* CTA group */
+  .cta-group {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--navy);
+    color: #fff;
+    padding: 14px 30px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.1px;
+  }
+  .btn-primary:hover {
+    background: var(--navy-mid);
+    transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
   }
-  .code-block .comment { color: #a8b8d0; }
-  .code-block .cmd { color: #8eb8f7; }
-  .code-block .flag { color: #d4b87a; }
+  .btn-primary svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-  /* CTA */
-  .cta-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-  .btn-primary {
-    background: var(--navy); color: var(--white);
-    padding: 14px 32px; border-radius: 7px; text-decoration: none;
-    font-size: 15px; font-weight: 600; transition: all 0.2s;
-    border: none; cursor: pointer; letter-spacing: 0.1px;
-  }
-  .btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
   .btn-secondary {
-    background: transparent; color: var(--ink-muted);
-    padding: 14px 32px; border-radius: 7px; text-decoration: none;
-    font-size: 15px; font-weight: 500; border: 1px solid var(--cream-border);
+    background: transparent;
+    color: var(--ink-soft);
+    padding: 14px 30px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid var(--paper-border);
     transition: all 0.2s;
   }
-  .btn-secondary:hover { border-color: var(--ink-muted); color: var(--ink); }
-
-  /* THREAT BANNER */
-  .threat-banner {
-    background: var(--cream-dark);
-    border-top: 1px solid var(--cream-border);
-    border-bottom: 1px solid var(--cream-border);
-    padding: 72px 0;
-    margin: 0;
+  .btn-secondary:hover {
+    border-color: var(--ink-soft);
+    color: var(--ink);
   }
-  .threat-banner-inner {
+
+  /* =============================================
+     OPEN SOURCE BADGE STRIP
+     ============================================= */
+  .oss-strip {
+    padding: 20px 0;
+    border-top: 1px solid var(--paper-border);
+    border-bottom: 1px solid var(--paper-border);
+    background: var(--paper-warm);
+  }
+  .oss-strip .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    flex-wrap: wrap;
+  }
+  .oss-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    letter-spacing: 0.1px;
+  }
+  .oss-pill .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .oss-pill.accent .dot { background: var(--accent); }
+  .oss-sep {
+    width: 1px;
+    height: 16px;
+    background: var(--paper-border);
+  }
+
+  /* =============================================
+     THREAT BANNER
+     ============================================= */
+  .threat {
+    padding: 80px 0;
+    background: var(--paper-warm);
+    border-top: 1px solid var(--paper-border);
+    border-bottom: 1px solid var(--paper-border);
+  }
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .section-h2 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(30px, 3.5vw, 40px);
+    font-weight: 400;
+    color: var(--navy);
+    text-align: center;
+    letter-spacing: -0.4px;
+    margin-bottom: 56px;
+    line-height: 1.15;
+  }
+
+  .threat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--paper-border);
+    border: 1px solid var(--paper-border);
+    border-radius: 10px;
+    overflow: hidden;
     max-width: 900px;
     margin: 0 auto;
   }
-  .threat-banner-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--ink-faint);
+  .threat-cell {
+    background: var(--paper-warm);
+    padding: 36px 28px;
     text-align: center;
-    margin-bottom: 12px;
   }
-  .threat-banner h2 {
+  .threat-number {
     font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 30px;
-    font-weight: 400;
-    margin-bottom: 48px;
-    color: var(--navy);
-    text-align: center;
-    letter-spacing: -0.3px;
-  }
-  .threat-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1px;
-    background: var(--cream-border);
-    border: 1px solid var(--cream-border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .threat-stat {
-    text-align: center;
-    padding: 32px 24px;
-    background: var(--cream-dark);
-  }
-  .threat-stat .number {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 42px;
+    font-size: 46px;
     font-weight: 400;
     color: var(--navy);
-    letter-spacing: -1px;
+    letter-spacing: -1.5px;
     line-height: 1;
+    margin-bottom: 10px;
   }
-  .threat-stat .label {
-    font-size: 12px;
-    color: var(--ink-muted);
-    margin-top: 8px;
+  .threat-label {
+    font-size: 13px;
+    color: var(--ink-soft);
     line-height: 1.5;
     font-weight: 500;
+    margin-bottom: 8px;
   }
-
-  /* SECTION HEADERS */
-  .section-label {
+  .threat-source {
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
     color: var(--ink-faint);
-    text-align: center;
-    margin-bottom: 12px;
   }
+  .threat-source a {
+    color: var(--ink-faint);
+    text-decoration: underline;
+  }
+  .threat-source a:hover { color: var(--ink-soft); }
 
-  /* FEATURES */
+  /* =============================================
+     FEATURES
+     ============================================= */
   .features { padding: 100px 0; }
-  .features h2 {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 40px;
-    font-weight: 400;
-    text-align: center;
-    margin-bottom: 14px;
-    letter-spacing: -0.5px;
-    color: var(--navy);
-  }
-  .features .subtitle {
-    text-align: center; color: var(--ink-muted);
-    font-size: 17px; margin-bottom: 64px;
-    font-weight: 400;
-  }
+
   .feature-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
     gap: 1px;
-    background: var(--cream-border);
-    border: 1px solid var(--cream-border);
-    border-radius: 10px;
+    background: var(--paper-border);
+    border: 1px solid var(--paper-border);
+    border-radius: 12px;
     overflow: hidden;
+    margin-top: 56px;
   }
   .feature-card {
     background: var(--surface);
-    padding: 36px 32px;
+    padding: 36px 34px;
     transition: background 0.2s;
   }
-  .feature-card:hover { background: #fdfcfa; }
+  .feature-card:hover { background: var(--surface-raised); }
   .feature-icon {
-    width: 36px; height: 36px; border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; margin-bottom: 20px;
-    background: var(--accent-light);
+    width: 38px;
+    height: 38px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+    background: var(--accent-tint);
   }
   .feature-card h3 {
     font-size: 16px;
@@ -278,29 +404,115 @@
     color: var(--navy);
     letter-spacing: -0.1px;
   }
-  .feature-card p { font-size: 14px; color: var(--ink-muted); line-height: 1.6; }
-
-  /* COMPARISON */
-  .comparison { padding: 100px 0; background: var(--cream-dark); }
-  .comparison h2 {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 40px;
-    font-weight: 400;
-    text-align: center;
-    margin-bottom: 14px;
-    letter-spacing: -0.5px;
-    color: var(--navy);
+  .feature-card p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.65;
   }
-  .comparison .subtitle {
-    text-align: center; color: var(--ink-muted);
-    font-size: 17px; margin-bottom: 56px;
+
+  /* Architecture diagram */
+  .arch-diagram {
+    max-width: 720px;
+    margin: 56px auto 0;
+    padding: 40px;
+    background: var(--surface);
+    border: 1px solid var(--paper-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-card);
+  }
+  .arch-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 28px;
+    text-align: center;
+  }
+  .arch-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: nowrap;
+  }
+  .arch-node {
+    text-align: center;
+    padding: 14px 20px;
+    flex-shrink: 0;
+  }
+  .arch-node .icon { font-size: 24px; margin-bottom: 8px; }
+  .arch-node .name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .arch-node .sub {
+    font-size: 11px;
+    color: var(--ink-faint);
+    line-height: 1.4;
+  }
+  .arch-arrow {
+    font-size: 18px;
+    color: var(--ink-faint);
+    padding: 0 12px;
+    flex-shrink: 0;
+  }
+
+  /* Config snippet */
+  .config-snippet {
+    max-width: 720px;
+    margin: 24px auto 0;
+    padding: 36px;
+    background: var(--surface);
+    border: 1px solid var(--paper-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-card);
+  }
+  .config-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 16px;
+  }
+  .config-code {
+    background: var(--navy);
+    border-radius: 8px;
+    padding: 22px 26px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.75;
+    color: #c8d4e6;
+    overflow-x: auto;
+  }
+  .cc-key { color: #8eb8f7; }
+  .cc-colon { color: #6b7a99; }
+  .cc-val { color: #a8d4a0; }
+  .cc-comment { color: #6b7a99; }
+
+  /* =============================================
+     COMPARISON TABLE
+     ============================================= */
+  .comparison {
+    padding: 100px 0;
+    background: var(--paper-warm);
+    border-top: 1px solid var(--paper-border);
+  }
+  .section-subtitle {
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 17px;
+    margin-bottom: 56px;
   }
   .table-wrap {
     overflow-x: auto;
-    border: 1px solid var(--cream-border);
-    border-radius: 10px;
+    border: 1px solid var(--paper-border);
+    border-radius: 12px;
     background: var(--surface);
-    box-shadow: var(--shadow-xs);
+    box-shadow: var(--shadow-card);
   }
   table {
     width: 100%;
@@ -310,20 +522,20 @@
   th {
     text-align: left;
     padding: 14px 18px;
-    border-bottom: 1px solid var(--cream-border);
+    border-bottom: 1px solid var(--paper-border);
     font-weight: 600;
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.6px;
     color: var(--ink-faint);
-    background: #faf9f7;
+    background: #faf8f4;
   }
   th:not(:first-child) { text-align: center; }
   td {
     padding: 13px 18px;
-    border-bottom: 1px solid var(--cream-border);
+    border-bottom: 1px solid var(--paper-border);
     text-align: center;
-    color: var(--ink-muted);
+    color: var(--ink-soft);
   }
   tbody tr:last-child td { border-bottom: none; }
   td:first-child {
@@ -331,63 +543,114 @@
     font-weight: 500;
     color: var(--ink);
   }
-  tr:hover td { background: #fdfcfa; }
-  .check { color: var(--sage); font-weight: 600; }
+  tr:hover td { background: #fdfcf9; }
+  .check { color: var(--green); font-weight: 600; }
   .cross { color: var(--ink-faint); }
   .partial { color: var(--amber); }
-  .us-col { background: var(--accent-light); }
   .us-header { color: var(--accent) !important; }
-  tbody .us-col { background: rgba(61, 90, 138, 0.05); }
-
-  /* PRICING */
-  .pricing { padding: 100px 0; }
-  .pricing h2 {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 40px;
-    font-weight: 400;
-    text-align: center;
-    margin-bottom: 14px;
-    letter-spacing: -0.5px;
-    color: var(--navy);
-  }
-  .pricing .subtitle {
-    text-align: center; color: var(--ink-muted);
-    font-size: 17px; margin-bottom: 56px;
-  }
-
-  /* SOCIAL PROOF */
-  .proof {
-    padding: 72px 0;
-    text-align: center;
-    border-top: 1px solid var(--cream-border);
-    border-bottom: 1px solid var(--cream-border);
-    background: var(--cream-dark);
-  }
-  .proof-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-bottom: 28px;
-  }
-  .proof-logos {
-    display: flex; gap: 40px; justify-content: center;
-    align-items: center; flex-wrap: wrap;
-    margin-bottom: 20px;
-  }
-  .proof-logos span {
-    font-size: 13px; font-weight: 600;
-    color: var(--ink-faint); letter-spacing: 0.8px;
-    text-transform: uppercase;
-  }
-  .proof p {
-    font-size: 14px;
-    color: var(--ink-muted);
+  .us-col { background: rgba(53, 87, 160, 0.04); }
+  tbody .us-col { background: rgba(53, 87, 160, 0.04); }
+  .table-note {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 18px;
+    max-width: 680px;
     line-height: 1.6;
   }
 
-  /* EMAIL CAPTURE */
+  /* =============================================
+     OPEN SOURCE SECTION
+     ============================================= */
+  .opensource {
+    padding: 100px 0;
+    text-align: center;
+  }
+  .price-block {
+    max-width: 520px;
+    margin: 0 auto 40px;
+    padding: 48px;
+    background: var(--surface);
+    border: 1px solid var(--paper-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-card);
+  }
+  .price-amount {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 56px;
+    color: var(--navy);
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+  }
+  .price-tagline {
+    color: var(--ink-soft);
+    font-size: 16px;
+    margin-bottom: 32px;
+  }
+  .price-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .price-badge {
+    background: var(--green-tint);
+    color: var(--green);
+    padding: 6px 14px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* =============================================
+     SOCIAL PROOF STRIP
+     ============================================= */
+  .proof {
+    padding: 28px 0;
+    border-top: 1px solid var(--paper-border);
+    border-bottom: 1px solid var(--paper-border);
+    background: var(--paper-warm);
+  }
+  .proof .container {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .proof-item {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-faint);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .proof-dot {
+    font-size: 6px;
+    color: var(--ink-faint);
+  }
+
+  /* =============================================
+     FAQ
+     ============================================= */
+  .faq { padding: 80px 0; border-top: 1px solid var(--paper-border); }
+  .faq-list { margin-top: 48px; }
+  .faq-item { margin-bottom: 32px; }
+  .faq-q {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--navy);
+    letter-spacing: -0.1px;
+  }
+  .faq-a {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* =============================================
+     EMAIL SECTION
+     ============================================= */
   .email-section {
     padding: 100px 0;
     text-align: center;
@@ -401,58 +664,81 @@
     color: var(--navy);
   }
   .email-section p {
-    color: var(--ink-muted); font-size: 17px;
-    margin-bottom: 40px; max-width: 480px;
-    margin-left: auto; margin-right: auto;
+    color: var(--ink-soft);
+    font-size: 17px;
+    margin-bottom: 40px;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
     line-height: 1.6;
   }
   .email-form {
-    display: flex; gap: 12px;
+    display: flex;
+    gap: 12px;
     justify-content: center;
-    max-width: 480px;
+    max-width: 460px;
     margin: 0 auto;
     flex-wrap: wrap;
   }
   .email-form input {
-    flex: 1; min-width: 240px;
-    padding: 14px 18px;
+    flex: 1;
+    min-width: 220px;
+    padding: 13px 18px;
     border-radius: 7px;
-    border: 1px solid var(--cream-border);
+    border: 1px solid var(--paper-border);
     background: var(--surface);
     color: var(--ink);
     font-size: 15px;
     font-family: 'Inter', sans-serif;
     outline: none;
     transition: border-color 0.2s;
-    box-shadow: var(--shadow-xs);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   }
   .email-form input:focus { border-color: var(--accent); }
   .email-form input::placeholder { color: var(--ink-faint); }
   .email-note {
-    font-size: 13px; color: var(--ink-faint);
+    font-size: 13px;
+    color: var(--ink-faint);
     margin-top: 14px;
   }
 
-  /* FOOTER */
+  /* =============================================
+     FOOTER
+     ============================================= */
   footer {
-    padding: 40px 0;
-    border-top: 1px solid var(--cream-border);
+    padding: 36px 0;
+    border-top: 1px solid var(--paper-border);
     text-align: center;
     font-size: 13px;
     color: var(--ink-faint);
-    background: var(--cream-dark);
+    background: var(--paper-warm);
   }
+  footer a {
+    color: var(--ink-faint);
+    text-decoration: none;
+  }
+  footer a:hover { color: var(--ink-soft); }
 
-  /* RESPONSIVE */
-  @media (max-width: 640px) {
+  /* =============================================
+     RESPONSIVE
+     ============================================= */
+  @media (max-width: 768px) {
     .container { padding: 0 20px; }
-    .hero { padding: 72px 0 56px; }
-    .threat-stats { grid-template-columns: repeat(2, 1fr); }
+    .container-narrow { padding: 0 20px; }
+    .hero { padding: 72px 0 60px; }
+    .arch-flow { flex-direction: column; }
+    .arch-arrow { transform: rotate(90deg); }
+    .nav-link { display: none; }
+    .threat-grid { grid-template-columns: repeat(2, 1fr); }
     .feature-grid { grid-template-columns: 1fr; }
-    .pricing-grid { grid-template-columns: 1fr; }
     table { font-size: 12px; }
     th, td { padding: 9px 10px; }
-    .hero h1 { letter-spacing: -0.5px; }
+    .oss-sep { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .threat-grid { grid-template-columns: 1fr; }
+    .hero h1 { letter-spacing: -0.8px; }
   }
 </style>
 <script type="application/ld+json">
@@ -462,7 +748,7 @@
   "name": "MCP Zero-Trust Proxy",
   "applicationCategory": "SecurityApplication",
   "operatingSystem": "Linux, macOS, Windows",
-  "description": "A drop-in reverse proxy that adds OAuth 2.1 PKCE authentication, role-based access control, audit logging, and rate limiting to any MCP server — with zero code changes.",
+  "description": "A drop-in reverse proxy that adds OAuth 2.1 PKCE authentication, role-based access control, audit logging, and rate limiting to any MCP server — with zero code changes. MIT licensed.",
   "url": "https://mcpzerotrust.dev",
   "downloadUrl": "https://github.com/AnobleSCM/mcp-zero-trust-proxy/releases",
   "softwareVersion": "1.0.0",
@@ -490,7 +776,7 @@
       "name": "What is the difference between MCP Zero-Trust Proxy and MCP Auth Proxy (sigbit)?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "sigbit (MCP Auth Proxy) adds OAuth-only authentication. MCP Zero-Trust Proxy adds OAuth 2.1 PKCE authentication plus role-based access control (RBAC), per-client sessions, structured JSON audit logging, and per-client rate limiting — making it suitable for compliance requirements and multi-tenant deployments where you need to control which users can call which tools and maintain a full audit trail."
+        "text": "sigbit adds OAuth-only authentication. MCP Zero-Trust Proxy adds OAuth 2.1 PKCE plus role-based access control (RBAC), per-client sessions, structured JSON audit logging, and per-client rate limiting — making it suitable for compliance requirements and multi-tenant deployments."
       }
     },
     {
@@ -498,7 +784,7 @@
       "name": "Is MCP Zero-Trust Proxy self-hosted?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. MCP Zero-Trust Proxy runs as a single Docker container or standalone Go binary on your own infrastructure. Your MCP traffic, tokens, and audit logs never leave your servers. There is no cloud dependency — the proxy works entirely within your environment."
+        "text": "Yes. MCP Zero-Trust Proxy runs as a single Docker container or standalone Go binary on your own infrastructure. Your MCP traffic, tokens, and audit logs never leave your servers. There is no cloud dependency."
       }
     },
     {
@@ -506,7 +792,7 @@
       "name": "How much does MCP Zero-Trust Proxy cost?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "MCP Zero-Trust Proxy is completely free and open source under the MIT license. There are no paid tiers, no license keys, and no feature restrictions. All features — OAuth 2.1 PKCE, RBAC, audit logging, rate limiting, and per-client sessions — are included."
+        "text": "MCP Zero-Trust Proxy is completely free and open source under the MIT license. There are no paid tiers, no license keys, and no feature restrictions."
       }
     },
     {
@@ -514,14 +800,15 @@
       "name": "What MCP clients does MCP Zero-Trust Proxy work with?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "MCP Zero-Trust Proxy works with any MCP client that uses the HTTP+SSE transport — including Claude Desktop, Cursor, GitHub Copilot, and custom MCP clients. It is fully transport-agnostic on the client side and requires no client-side changes."
+        "text": "MCP Zero-Trust Proxy works with any MCP client that uses the HTTP+SSE transport — including Claude Desktop, Cursor, GitHub Copilot, and custom MCP clients."
       }
-    },{
+    },
+    {
       "@type": "Question",
       "name": "What happens if Anthropic or the MCP spec adds native authentication?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "That would be great. Native auth in the MCP spec would solve the authentication layer. The proxy continues to add value for what comes after authentication: authorization (who can call which tools), audit logging (a permanent record of every call), per-client rate limiting, and per-client sessions. The spec has no plans to standardize these — and for regulated environments and multi-tenant deployments, they are not optional. If anything, standardized auth makes the proxy more valuable because the authentication layer becomes simpler to configure."
+        "text": "That would be great. Native auth in the MCP spec would solve the authentication layer. The proxy continues to add value for what comes after: authorization (who can call which tools), audit logging, per-client rate limiting, and per-client sessions. The spec has no plans to standardize these — and for regulated environments, they are not optional."
       }
     }
   ]
@@ -530,304 +817,361 @@
 </head>
 <body>
 
+<!-- NAVIGATION -->
 <nav>
   <div class="container">
-    <div class="logo"><span>mcp</span>proxy</div>
-    <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy" class="cta-nav" target="_blank">View on GitHub</a>
+    <a href="/" class="logo"><em>mcp</em>proxy</a>
+    <div class="nav-right">
+      <a href="#how-it-works" class="nav-link">How it works</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy" class="btn-nav" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+        View on GitHub
+      </a>
+    </div>
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">8,000+ MCP servers publicly reachable with no authentication</div>
+    <div class="hero-badge">8,000+ MCP servers reachable with no auth</div>
     <h1>Secure your MCP servers <em>in minutes</em></h1>
-    <p class="sub">AI agents like Claude, Cursor, and Copilot connect to your tools via MCP — but there's no built-in security. We add authentication, access control, and audit logging without touching your server code.</p>
+    <p class="hero-sub">
+      AI agents connect to your tools via MCP — but there's no built-in security.
+      Drop in one proxy. Zero code changes to your server.
+    </p>
     <div class="code-block">
-      <div><span class="comment"># Protect any MCP server instantly</span></div>
-      <div><span class="cmd">docker run</span> <span class="flag">-e</span> MCP_TARGET=localhost:3000 \</div>
-      <div>&nbsp;&nbsp;<span class="flag">-e</span> AUTH_PROVIDER=github \</div>
-      <div>&nbsp;&nbsp;<span class="flag">-p</span> 8443:8443 \</div>
-      <div>&nbsp;&nbsp;ghcr.io/anoblescm/mcp-zero-trust-proxy</div>
+      <span class="line"><span class="code-comment"># Protect any MCP server instantly — free &amp; open source</span></span>
+      <span class="line"><span class="code-cmd">docker run</span> <span class="code-flag">-e</span> <span class="code-string">MCP_TARGET</span>=localhost:3000 \</span>
+      <span class="line">&nbsp;&nbsp;<span class="code-flag">-e</span> <span class="code-string">AUTH_PROVIDER</span>=github \</span>
+      <span class="line">&nbsp;&nbsp;<span class="code-flag">-p</span> 8443:8443 \</span>
+      <span class="line">&nbsp;&nbsp;ghcr.io/anoblescm/mcp-zero-trust-proxy</span>
     </div>
     <div class="cta-group">
-      <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy" class="btn-primary" target="_blank">View on GitHub</a>
-      <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy/releases" class="btn-secondary" target="_blank">Download Latest</a>
+      <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy" class="btn-primary" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+        View on GitHub
+      </a>
+      <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy/releases" class="btn-secondary" target="_blank" rel="noopener">
+        Download v1.0.0
+      </a>
     </div>
   </div>
 </section>
 
-
-<section class="threat-banner">
+<!-- OPEN SOURCE STRIP -->
+<div class="oss-strip">
   <div class="container">
-    <div class="threat-banner-inner">
-      <div class="threat-banner-label">Threat landscape</div>
-      <h2>The MCP threat landscape in 2026</h2>
-      <div class="threat-stats">
-        <div class="threat-stat">
-          <div class="number">8,000+</div>
-          <div class="label">MCP servers publicly reachable<br>with no authentication</div>
-          <div style="font-size: 11px; margin-top: 6px;"><a href="https://www.shodan.io/search?query=mcp" style="color: var(--ink-faint); text-decoration: underline;" target="_blank" rel="noopener">Source: Shodan</a></div>
-        </div>
-        <div class="threat-stat">
-          <div class="number">30+</div>
-          <div class="label">CVEs in 60 days<br>(Jan–Feb 2026)</div>
-          <div style="font-size: 11px; margin-top: 6px;"><a href="https://www.cvedetails.com/vulnerability-list/?vendor_id=0&product_id=0&version_id=0&page=1&hasexp=0&opdos=0&opec=0&opov=0&opcsrf=0&opgpriv=0&opsqli=0&opxss=0&opdirt=0&opmemc=0&ophttprs=0&opbyp=0&opfileinc=0&opginf=0&cvssscoremin=0&cvssscoremax=0&year=2026&month=0&cweid=0&order=1&trc=30&sha=c6fe8b9ea4e0e33e2a0b7cf09ec28e0c4e30b4b1" style="color: var(--ink-faint); text-decoration: underline;" target="_blank" rel="noopener">Source: CVE Details</a></div>
-        </div>
-        <div class="threat-stat">
-          <div class="number">9.6</div>
-          <div class="label">CVSS score on<br>mcp-remote RCE</div>
-          <div style="font-size: 11px; margin-top: 6px;"><a href="https://nvd.nist.gov/vuln/search/results?query=mcp-remote" style="color: var(--ink-faint); text-decoration: underline;" target="_blank" rel="noopener">Source: NVD</a></div>
-        </div>
-        <div class="threat-stat">
-          <div class="number">48hrs</div>
-          <div class="label">Clawdbot to<br>infostealer targeting</div>
-          <div style="font-size: 11px; margin-top: 6px;"><a href="https://venturebeat.com/security/clawdbot-exploits-48-hours-what-broke" style="color: var(--ink-faint); text-decoration: underline;" target="_blank" rel="noopener">Source: VentureBeat</a></div>
-        </div>
+    <div class="oss-pill"><span class="dot"></span> MIT Licensed</div>
+    <div class="oss-sep"></div>
+    <div class="oss-pill"><span class="dot"></span> 236+ Tests Passing</div>
+    <div class="oss-sep"></div>
+    <div class="oss-pill"><span class="dot"></span> Single Go Binary</div>
+    <div class="oss-sep"></div>
+    <div class="oss-pill accent"><span class="dot"></span> No Paid Tiers — Ever</div>
+    <div class="oss-sep"></div>
+    <div class="oss-pill accent"><span class="dot"></span> p50 Latency: 386µs</div>
+  </div>
+</div>
+
+<!-- THREAT BANNER -->
+<section class="threat">
+  <div class="container">
+    <div class="section-eyebrow">Threat landscape</div>
+    <h2 class="section-h2">Why MCP security cannot wait</h2>
+    <div class="threat-grid">
+      <div class="threat-cell">
+        <div class="threat-number">8,000+</div>
+        <div class="threat-label">MCP servers reachable<br>with no authentication</div>
+        <div class="threat-source"><a href="https://www.shodan.io/search?query=mcp" target="_blank" rel="noopener">Source: Shodan</a></div>
+      </div>
+      <div class="threat-cell">
+        <div class="threat-number">30+</div>
+        <div class="threat-label">CVEs in 60 days<br>(Jan–Feb 2026)</div>
+        <div class="threat-source"><a href="https://www.cvedetails.com/" target="_blank" rel="noopener">Source: CVE Details</a></div>
+      </div>
+      <div class="threat-cell">
+        <div class="threat-number">9.6</div>
+        <div class="threat-label">CVSS score on<br>mcp-remote RCE</div>
+        <div class="threat-source"><a href="https://nvd.nist.gov/" target="_blank" rel="noopener">Source: NVD</a></div>
+      </div>
+      <div class="threat-cell">
+        <div class="threat-number">48hrs</div>
+        <div class="threat-label">Clawdbot to<br>infostealer targeting</div>
+        <div class="threat-source"><a href="https://venturebeat.com/security/" target="_blank" rel="noopener">Source: VentureBeat</a></div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- FEATURES -->
 <section class="features" id="how-it-works">
   <div class="container">
-    <div class="section-label">How it works</div>
-    <h2>Everything you need. Nothing you don't.</h2>
-    <p class="subtitle">One proxy. Full zero-trust security. No server code changes.</p>
+    <div class="section-eyebrow">How it works</div>
+    <h2 class="section-h2" style="margin-bottom: 0;">Everything you need.<br>Nothing you don't.</h2>
+    <p style="text-align:center; color: var(--ink-soft); font-size: 17px; margin-top: 16px;">One proxy. Full zero-trust security. No server code changes.</p>
     <div class="feature-grid">
       <div class="feature-card">
         <div class="feature-icon">🔐</div>
-        <h3>Authentication</h3>
-        <p>Require login before anyone can use your tools. Works with GitHub, Google, Okta, or any identity provider — using the latest OAuth 2.1 standard.</p>
+        <h3>OAuth 2.1 Authentication</h3>
+        <p>Require login before anyone can use your tools. Works with GitHub, Google, Okta, or any OIDC provider — using the latest OAuth 2.1 PKCE standard.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🛡️</div>
-        <h3>Access Control</h3>
+        <h3>Tool-Level Access Control</h3>
         <p>Decide who can do what. Give one team full access, restrict another to read-only, block specific tools entirely — all configured in a simple YAML file.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🔒</div>
         <h3>Per-Client Sessions</h3>
-        <p>Every user gets their own walled-off session. One client's data never leaks to another — even if they're using the same server.</p>
+        <p>Every user gets their own walled-off session. One client's data never leaks to another — even if they're using the same upstream server.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">📋</div>
-        <h3>Audit Trail</h3>
-        <p>Every request is recorded — who made it, what they asked for, whether it was allowed. Exportable logs for security reviews and compliance.</p>
+        <h3>Structured Audit Trail</h3>
+        <p>Every request is recorded — who made it, what they asked for, whether it was allowed. Structured JSON logs with file rotation for security reviews.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">⚡</div>
         <h3>Quick Setup</h3>
-        <p>Docker pull, set your MCP target and auth provider, done. Single container, single config file. No Kubernetes required.</p>
+        <p>Docker pull, set your MCP target and auth provider, done. Single container, single config file. No Kubernetes required. Sub-millisecond overhead.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🚦</div>
-        <h3>Rate Limiting</h3>
-        <p>Prevent any single user or agent from overwhelming your server. Set request limits per client and enforce them automatically.</p>
+        <h3>Per-Client Rate Limiting</h3>
+        <p>Prevent any single user or agent from overwhelming your server. 300 req/min default, configurable per client with token-bucket enforcement.</p>
       </div>
     </div>
 
-    <!-- ARCHITECTURE DIAGRAM -->
-    <div style="max-width: 720px; margin: 72px auto 0; padding: 40px; background: var(--surface); border: 1px solid var(--cream-border); border-radius: 10px; box-shadow: var(--shadow-xs);">
-      <div style="font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 24px; text-align: center;">How it fits in your stack</div>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: nowrap;">
-        <div style="text-align: center; padding: 12px 16px; flex-shrink: 0;">
-          <div style="font-size: 22px; margin-bottom: 6px;">💻</div>
-          <div style="font-weight: 600; font-size: 13px; color: var(--navy);">AI Client</div>
-          <div style="font-size: 11px; color: var(--ink-faint);">Claude, Cursor, Copilot</div>
+    <!-- Architecture diagram -->
+    <div class="arch-diagram">
+      <div class="arch-label">How it fits in your stack</div>
+      <div class="arch-flow">
+        <div class="arch-node">
+          <div class="icon">💻</div>
+          <div class="name">AI Client</div>
+          <div class="sub">Claude, Cursor, Copilot</div>
         </div>
-        <div style="font-size: 20px; color: var(--ink-faint); padding: 0 10px; flex-shrink: 0;">→</div>
-        <div style="text-align: center; padding: 12px 16px; flex-shrink: 0;">
-          <div style="font-size: 22px; margin-bottom: 6px;">🛡️</div>
-          <div style="font-weight: 600; font-size: 13px; color: var(--navy);">MCP Zero-Trust Proxy</div>
-          <div style="font-size: 11px; color: var(--ink-muted); margin-top: 4px;">Auth · RBAC · Audit · Rate Limit</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">
+          <div class="icon">🛡️</div>
+          <div class="name">MCP Zero-Trust Proxy</div>
+          <div class="sub">Auth · RBAC · Audit · Rate Limit</div>
         </div>
-        <div style="font-size: 20px; color: var(--ink-faint); padding: 0 10px; flex-shrink: 0;">→</div>
-        <div style="text-align: center; padding: 12px 16px; flex-shrink: 0;">
-          <div style="font-size: 22px; margin-bottom: 6px;">⚙️</div>
-          <div style="font-weight: 600; font-size: 13px; color: var(--navy);">Your MCP Server</div>
-          <div style="font-size: 11px; color: var(--ink-faint);">Unchanged, untouched</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">
+          <div class="icon">⚙️</div>
+          <div class="name">Your MCP Server</div>
+          <div class="sub">Unchanged, untouched</div>
         </div>
       </div>
     </div>
 
-    <!-- CONFIG SNIPPET -->
-    <div style="max-width: 720px; margin: 32px auto 0; padding: 40px; background: var(--surface); border: 1px solid var(--cream-border); border-radius: 10px; box-shadow: var(--shadow-xs);">
-      <div style="font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 16px;">Example config.yaml</div>
-      <div style="background: var(--navy); border-radius: 8px; padding: 20px 24px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.7; color: #c8d1e0; overflow-x: auto;">
-        <div><span style="color: #8eb8f7;">roles</span><span style="color: #6b7a99;">:</span></div>
-        <div>&nbsp;&nbsp;- <span style="color: #8eb8f7;">name</span><span style="color: #6b7a99;">:</span> <span style="color: #a8d4a0;">"admin"</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #8eb8f7;">allowed_tools</span><span style="color: #6b7a99;">:</span> <span style="color: #a8d4a0;">["*"]</span></div>
-        <div>&nbsp;&nbsp;- <span style="color: #8eb8f7;">name</span><span style="color: #6b7a99;">:</span> <span style="color: #a8d4a0;">"developer"</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #8eb8f7;">allowed_tools</span><span style="color: #6b7a99;">:</span> <span style="color: #a8d4a0;">["read_file", "search"]</span></div>
-        <div>&nbsp;&nbsp;- <span style="color: #8eb8f7;">name</span><span style="color: #6b7a99;">:</span> <span style="color: #a8d4a0;">"viewer"</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #8eb8f7;">allowed_tools</span><span style="color: #6b7a99;">:</span> <span style="color: #a8d4a0;">[]</span> &nbsp;<span style="color: #6b7a99;"># read-only, no tool access</span></div>
+    <!-- Config snippet -->
+    <div class="config-snippet">
+      <div class="config-label">Example config.yaml</div>
+      <div class="config-code">
+        <div><span class="cc-key">roles</span><span class="cc-colon">:</span></div>
+        <div>&nbsp;&nbsp;- <span class="cc-key">name</span><span class="cc-colon">:</span> <span class="cc-val">"admin"</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="cc-key">allowed_tools</span><span class="cc-colon">:</span> <span class="cc-val">["*"]</span></div>
+        <div>&nbsp;&nbsp;- <span class="cc-key">name</span><span class="cc-colon">:</span> <span class="cc-val">"developer"</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="cc-key">allowed_tools</span><span class="cc-colon">:</span> <span class="cc-val">["read_file", "search"]</span></div>
+        <div>&nbsp;&nbsp;- <span class="cc-key">name</span><span class="cc-colon">:</span> <span class="cc-val">"viewer"</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="cc-key">allowed_tools</span><span class="cc-colon">:</span> <span class="cc-val">[]</span> &nbsp;<span class="cc-comment"># read-only, no tool access</span></div>
       </div>
     </div>
-
   </div>
 </section>
 
+<!-- COMPARISON -->
 <section class="comparison">
   <div class="container">
-    <div class="section-label">Comparison</div>
-    <h2>Why not just use...?</h2>
-    <p class="subtitle">See how it compares to existing options.</p>
+    <div class="section-eyebrow">Comparison</div>
+    <h2 class="section-h2">Why not just use…?</h2>
+    <p class="section-subtitle">How MCP Zero-Trust Proxy compares to existing options.</p>
     <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>nginx<br>reverse proxy</th>
-          <th>mcp-remote<br>(OAuth)</th>
-          <th>Kong<br>Gateway</th>
-          <th>MCP Auth<br>Proxy (OSS)</th>
-          <th class="us-header">MCP Zero-<br>Trust Proxy</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Drop-in (no code changes)</td>
-          <td class="check">✓</td>
-          <td class="cross">✗</td>
-          <td class="cross">✗</td>
-          <td class="check">✓</td>
-          <td class="us-col check">✓</td>
-        </tr>
-        <tr>
-          <td>OAuth 2.1 PKCE</td>
-          <td class="cross">✗</td>
-          <td class="check">✓</td>
-          <td class="check">✓</td>
-          <td class="check">✓</td>
-          <td class="us-col check">✓</td>
-        </tr>
-        <tr>
-          <td>Tool-level RBAC</td>
-          <td class="cross">✗</td>
-          <td class="cross">✗</td>
-          <td class="partial">~</td>
-          <td class="cross">✗</td>
-          <td class="us-col check">✓</td>
-        </tr>
-        <tr>
-          <td>Per-client sessions</td>
-          <td class="cross">✗</td>
-          <td class="cross">✗</td>
-          <td class="cross">✗</td>
-          <td class="cross">✗</td>
-          <td class="us-col check">✓</td>
-        </tr>
-        <tr>
-          <td>Audit logging</td>
-          <td class="cross">✗</td>
-          <td class="cross">✗</td>
-          <td class="check">✓</td>
-          <td class="cross">✗</td>
-          <td class="us-col check">✓</td>
-        </tr>
-        <tr>
-          <td>No known CVEs</td>
-          <td class="check">✓</td>
-          <td class="cross" style="color: var(--rust)">9.6 RCE</td>
-          <td class="check">✓</td>
-          <td class="check">✓</td>
-          <td class="us-col check">✓</td>
-        </tr>
-        <tr>
-          <td>Setup time</td>
-          <td>30 min</td>
-          <td>15 min</td>
-          <td>Days</td>
-          <td>10 min</td>
-          <td class="us-col" style="color: var(--sage); font-weight: 600;">&lt; 10 min</td>
-        </tr>
-        <tr>
-          <td>Pricing</td>
-          <td>Free</td>
-          <td>Free</td>
-          <td>$$$</td>
-          <td>Free</td>
-          <td class="us-col" style="color: var(--sage); font-weight: 600;">Free / MIT</td>
-        </tr>
-      </tbody>
-    </table>
-    <p style="font-size: 13px; color: var(--ink-muted); margin-top: 16px; text-align: left; max-width: 640px;">
-      <strong>Choose nginx</strong> if you just need basic auth and already have it configured — it works fine for simple cases.
-      <strong>Choose Kong</strong> if you're already running a Kong gateway in your infrastructure.
-      The proxy adds value when you need tool-level RBAC, audit logging, or session isolation that generic proxies don't provide for MCP.
-    </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>nginx<br>reverse proxy</th>
+            <th>mcp-remote<br>(OAuth)</th>
+            <th>Kong<br>Gateway</th>
+            <th>MCP Auth<br>Proxy (OSS)</th>
+            <th class="us-header">MCP Zero-<br>Trust Proxy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Drop-in (no code changes)</td>
+            <td class="check">✓</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="us-col check">✓</td>
+          </tr>
+          <tr>
+            <td>OAuth 2.1 PKCE</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="us-col check">✓</td>
+          </tr>
+          <tr>
+            <td>Tool-level RBAC</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="partial">~</td>
+            <td class="cross">✗</td>
+            <td class="us-col check">✓</td>
+          </tr>
+          <tr>
+            <td>Per-client sessions</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="us-col check">✓</td>
+          </tr>
+          <tr>
+            <td>Structured audit logging</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="cross">✗</td>
+            <td class="us-col check">✓</td>
+          </tr>
+          <tr>
+            <td>No known CVEs</td>
+            <td class="check">✓</td>
+            <td class="cross" style="color: var(--rust)">9.6 RCE</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="us-col check">✓</td>
+          </tr>
+          <tr>
+            <td>Setup time</td>
+            <td>30 min</td>
+            <td>15 min</td>
+            <td>Days</td>
+            <td>10 min</td>
+            <td class="us-col" style="color: var(--green); font-weight: 600;">&lt; 10 min</td>
+          </tr>
+          <tr>
+            <td>Pricing</td>
+            <td>Free</td>
+            <td>Free</td>
+            <td>$$$</td>
+            <td>Free</td>
+            <td class="us-col" style="color: var(--green); font-weight: 600;">Free / MIT</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="table-note" style="padding: 16px 18px;">
+        <strong>Choose nginx</strong> if you just need basic auth and already have it configured.
+        <strong>Choose Kong</strong> if you're already running a Kong gateway.
+        The proxy adds value when you need tool-level RBAC, structured audit logging, or per-client session isolation that generic proxies don't provide for MCP.
+      </p>
     </div>
   </div>
 </section>
 
-<section class="pricing" id="pricing">
-  <div class="container" style="text-align: center;">
-    <div class="section-label">Pricing</div>
-    <h2>Free &amp; Open Source</h2>
-    <p class="subtitle">MIT licensed. No tiers, no license keys, no limits. Run it however you want.</p>
-    <div style="max-width: 640px; margin: 0 auto 40px; padding: 40px; background: var(--surface); border: 1px solid var(--cream-border); border-radius: 10px; box-shadow: var(--shadow-xs);">
-      <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 48px; color: var(--navy); margin-bottom: 8px;">$0</div>
-      <div style="color: var(--ink-muted); font-size: 15px; margin-bottom: 24px;">Everything included. Forever.</div>
-      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-        <span style="background: var(--sage-light); color: var(--sage); padding: 6px 14px; border-radius: 4px; font-size: 13px; font-weight: 500;">Unlimited MCP servers</span>
-        <span style="background: var(--sage-light); color: var(--sage); padding: 6px 14px; border-radius: 4px; font-size: 13px; font-weight: 500;">300 req/min default</span>
-        <span style="background: var(--sage-light); color: var(--sage); padding: 6px 14px; border-radius: 4px; font-size: 13px; font-weight: 500;">Full RBAC</span>
-        <span style="background: var(--sage-light); color: var(--sage); padding: 6px 14px; border-radius: 4px; font-size: 13px; font-weight: 500;">File audit logging</span>
-      </div>
-    </div>
-    <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy" class="btn-primary" target="_blank">View on GitHub</a>
-  </div>
-</section>
-
-<section class="proof">
+<!-- OPEN SOURCE / PRICING -->
+<section class="opensource" id="pricing">
   <div class="container">
-    <div class="proof-logos">
-      <span>236+ tests</span>
-      <span>·</span>
-      <span>Written in Go</span>
-      <span>·</span>
-      <span>Single binary</span>
-      <span>·</span>
-      <span>~10MB</span>
-      <span>·</span>
-      <span>MIT Licensed</span>
+    <div class="section-eyebrow">Pricing</div>
+    <h2 class="section-h2">Free &amp; Open Source</h2>
+    <p class="section-subtitle" style="margin-top:-32px; margin-bottom:48px;">MIT licensed. No tiers, no license keys, no limits. Run it however you want.</p>
+    <div class="price-block">
+      <div class="price-amount">$0</div>
+      <div class="price-tagline">Everything included. Forever.</div>
+      <div class="price-features">
+        <span class="price-badge">Unlimited MCP servers</span>
+        <span class="price-badge">300 req/min default</span>
+        <span class="price-badge">Full RBAC</span>
+        <span class="price-badge">JSON audit logging</span>
+        <span class="price-badge">GitHub / Google / OIDC</span>
+        <span class="price-badge">MIT License</span>
+      </div>
     </div>
+    <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy" class="btn-primary" target="_blank" rel="noopener">
+      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style="width:16px;height:16px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+      View on GitHub
+    </a>
   </div>
 </section>
 
-<section id="faq" style="padding: 72px 0; border-top: 1px solid var(--cream-border);">
-  <div class="container" style="max-width: 720px;">
-    <div class="section-label">FAQ</div>
-    <h2 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 40px; font-weight: 400; text-align: center; margin-bottom: 40px; letter-spacing: -0.5px; color: var(--navy);">Common questions</h2>
-    <div style="margin-top: 40px;">
-      <div style="margin-bottom: 32px;">
-        <h3 style="font-size: 17px; font-weight: 600; margin-bottom: 8px;">What if Anthropic adds native auth to the MCP spec?</h3>
-        <p style="color: var(--ink-muted); font-size: 15px; line-height: 1.6;">That would be great. Native auth solves authentication. The proxy continues to add value for what comes next: authorization (who can call which tools), audit logging, rate limiting, and per-client sessions. The MCP spec has no plans to standardize these — and for regulated environments, they are not optional.</p>
-      </div>
-      <div style="margin-bottom: 32px;">
-        <h3 style="font-size: 17px; font-weight: 600; margin-bottom: 8px;">Is my traffic or data sent to any cloud service?</h3>
-        <p style="color: var(--ink-muted); font-size: 15px; line-height: 1.6;">No. The proxy runs entirely on your own infrastructure. Your MCP traffic, tokens, and audit logs never leave your servers. The only external dependency is your OAuth provider (GitHub, Google, etc.) for the authentication flow — which your users already trust.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="email-section" id="get-access">
+<!-- SOCIAL PROOF STRIP -->
+<div class="proof">
   <div class="container">
-    <div class="section-label">Updates</div>
+    <span class="proof-item">236+ Tests</span>
+    <span class="proof-dot">●</span>
+    <span class="proof-item">Written in Go</span>
+    <span class="proof-dot">●</span>
+    <span class="proof-item">Single Binary</span>
+    <span class="proof-dot">●</span>
+    <span class="proof-item">~10MB Image</span>
+    <span class="proof-dot">●</span>
+    <span class="proof-item">MIT Licensed</span>
+    <span class="proof-dot">●</span>
+    <span class="proof-item">No CVEs</span>
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container-narrow">
+    <div class="section-eyebrow">FAQ</div>
+    <h2 class="section-h2">Common questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">What if Anthropic adds native auth to the MCP spec?</div>
+        <div class="faq-a">That would be great. Native auth solves authentication. The proxy continues to add value for what comes next: authorization (who can call which tools), structured audit logging, per-client rate limiting, and per-client sessions. The MCP spec has no plans to standardize these — and for regulated environments, they are not optional.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is my traffic or data sent to any cloud service?</div>
+        <div class="faq-a">No. The proxy runs entirely on your own infrastructure. Your MCP traffic, tokens, and audit logs never leave your servers. The only external dependency is your OAuth provider (GitHub, Google, etc.) for the authentication flow — which your users already trust.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Why not just use Caddy + Authelia or nginx + OAuth2 Proxy?</div>
+        <div class="faq-a">Generic reverse proxies don't understand the MCP protocol. They can authenticate users, but they can't enforce which MCP tools a user is allowed to call, isolate per-client sessions within the MCP connection, or produce structured audit logs per JSON-RPC method. This proxy was built specifically for MCP's JSON-RPC 2.0 over HTTP+SSE transport.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do rate limits work across replicas?</div>
+        <div class="faq-a">Rate limits are per-instance in v1.0. If you run multiple replicas behind a load balancer, each enforces its own limits. For strict global rate limiting across replicas, a shared Redis store (planned for v1.1) would be needed. For most single-server deployments, per-instance limiting is sufficient.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EMAIL / UPDATES -->
+<section class="email-section" id="updates">
+  <div class="container">
+    <div class="section-eyebrow">Updates</div>
     <h2>Stay in the loop</h2>
     <p>Get notified about new releases and security advisories.</p>
     <form class="email-form" id="waitlist-form" onsubmit="handleSubmit(event)">
-      <input type="email" id="email-input" placeholder="you@company.com" required>
+      <input type="email" id="email-input" placeholder="you@company.com" required autocomplete="email">
       <button type="submit" class="btn-primary" id="submit-btn">Notify Me</button>
     </form>
-    <p class="email-note" id="form-note">No spam. Updates only.</p>
+    <p class="email-note" id="form-note">No spam. Release notes and security advisories only.</p>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   <div class="container">
-    <p>MCP Zero-Trust Proxy &copy; 2026 &nbsp;·&nbsp; <a href="mailto:support@mcpzerotrust.dev" style="color: var(--ink-faint); text-decoration: none;">support@mcpzerotrust.dev</a> &nbsp;·&nbsp; Built by developers, for developers who don't want to get breached.</p>
+    <p>
+      MCP Zero-Trust Proxy &copy; 2026
+      &nbsp;·&nbsp;
+      <a href="mailto:support@mcpzerotrust.dev">support@mcpzerotrust.dev</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy" target="_blank" rel="noopener">GitHub</a>
+      &nbsp;·&nbsp;
+      Built by developers, for developers who don't want to get breached.
+    </p>
   </div>
 </footer>
 
@@ -841,7 +1185,7 @@ async function handleSubmit(e) {
   const btn = document.getElementById('submit-btn');
   const note = document.getElementById('form-note');
 
-  btn.textContent = 'Joining...';
+  btn.textContent = 'Subscribing...';
   btn.disabled = true;
 
   try {
@@ -857,26 +1201,25 @@ async function handleSubmit(e) {
     });
 
     if (res.ok) {
-      btn.textContent = '\u2713 You\'re on the list!';
-      btn.style.background = '#4a7c59';
-      note.textContent = `We'll notify ${email} when the beta is ready.`;
+      btn.textContent = '\u2713 Subscribed!';
+      btn.style.background = '#3e7a52';
+      note.textContent = `We'll notify ${email} about new releases and security advisories.`;
       document.getElementById('email-input').disabled = true;
     } else if (res.status === 409) {
-      btn.textContent = 'Already signed up!';
-      btn.style.background = '#8b6914';
-      note.textContent = `${email} is already on the waitlist.`;
+      btn.textContent = 'Already subscribed!';
+      btn.style.background = '#8a6515';
+      note.textContent = `${email} is already on the list.`;
       btn.disabled = false;
     } else {
       throw new Error('Signup failed');
     }
   } catch (err) {
     btn.textContent = 'Try again';
-    btn.style.background = '#8b3a3a';
+    btn.style.background = '#8a3535';
     btn.disabled = false;
     note.textContent = 'Something went wrong. Please try again.';
   }
 }
-
 </script>
 
 </body>
