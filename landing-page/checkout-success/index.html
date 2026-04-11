@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Success | MCP Zero-Trust Proxy</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #09f;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: none;
+        }
+        .license-box {
+            background: #f1f5f9;
+            padding: 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 1rem 0;
+            white-space: pre-wrap;text-align:left;
+        }
+        .btn {
+            display: inline-block;
+            background: #000;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment Successful!</h1>
+        <p>Thank you for subscribing to MCP Zero-Trust Proxy.</p>
+        
+        <div id="loading">
+            <div class="spinner"></div>
+            <p>Generating your license key...</p>
+            <p><small>(This usually takes a few seconds while Stripe processes the webhook)</small></p>
+        </div>
+
+        <div id="success" class="hidden">
+            <p>Here is your license key. Save this in your environment as <code>LICENSE_KEY</code>.</p>
+            <div class="license-box" id="license-key"></div>
+            <p>Tier: <strong id="tier"></strong></p>
+            <p>Email: <strong id="email"></strong></p>
+            <a href="/" class="btn">Return Home</a>
+            <a href="https://github.com/atlas-agent-company/mcp-zero-trust-proxy/tree/main/docs" class="btn" style="background:#444">Read Documentation</a>
+        </div>
+
+        <div id="error" class="hidden" style="color: #d32f2f;">
+            <p><strong>Error fetching license key.</strong></p>
+            <p id="error-msg"></p>
+            <p>Check your email as a copy has been sent to you, or contact support.</p>
+        </div>
+    </div>
+
+    <script>
+        async function fetchLicense() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+            const getLicenseUrl = 'https://[SUPABASE_PROJECT_REF].supabase.co/functions/v1/get-license';
+
+            if (!sessionId) {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('error').classList.remove('hidden');
+                document.getElementById('error-msg').innerText = "No session_id found in URL.";
+                return;
+            }
+
+            let retries = 0;
+            const maxRetries = 10;
+            
+            const poll = async () => {
+                try {
+                    const response = await fetch(`${getLicenseUrl}?session_id=${sessionId}`);
+                    const data = await response.json();
+
+                    if (response.status === 200) {
+                        document.getElementById('loading').classList.add('hidden');
+                        document.getElementById('success').classList.remove('hidden');
+                        document.getElementById('license-key').innerText = data.license_key;
+                        document.getElementById('tier').innerText = data.tier;
+                        document.getElementById('email').innerText = data.email;
+                    } else if (response.status === 202 && retries < maxRetries) {
+                        retries++;
+                        setTimeout(poll, 3000); // Retry every 3 seconds
+                    } else {
+                        throw new Error(data.error || 'Max retries reached or unknown error');
+                    }
+                } catch (err) {
+                    document.getElementById('loading').classList.add('hidden');
+                    document.getElementById('error').classList.remove('hidden');
+                    document.getElementById('error-msg').innerText = err.message;
+                }
+            };
+            
+            poll();
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchLicense);
+    </script>
+</body>
+</html>
