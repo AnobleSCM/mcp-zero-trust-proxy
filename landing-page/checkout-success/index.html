@@ -77,7 +77,7 @@
             <p>Tier: <strong id="tier"></strong></p>
             <p>Email: <strong id="email"></strong></p>
             <a href="/" class="btn">Return Home</a>
-            <a href="https://github.com/atlas-agent-company/mcp-zero-trust-proxy/tree/main/docs" class="btn" style="background:#444">Read Documentation</a>
+            <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy/tree/main/docs" class="btn" style="background:#444">Read Documentation</a>
         </div>
 
         <div id="error" class="hidden" style="color: #d32f2f;">
@@ -91,7 +91,7 @@
         async function fetchLicense() {
             const urlParams = new URLSearchParams(window.location.search);
             const sessionId = urlParams.get('session_id');
-            const getLicenseUrl = 'https://[SUPABASE_PROJECT_REF].supabase.co/functions/v1/get-license';
+            const getLicenseUrl = 'https://dwumoznjyckebuirghne.supabase.co/functions/v1/get-license';
 
             if (!sessionId) {
                 document.getElementById('loading').classList.add('hidden');
