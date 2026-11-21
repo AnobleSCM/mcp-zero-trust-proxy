@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+# Nothing here publishes, so the token only needs to read the code.
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Test
