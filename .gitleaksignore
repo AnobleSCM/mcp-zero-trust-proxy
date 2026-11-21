@@ -1,0 +1,16 @@
+# Secret-scanner findings that were checked and accepted. None is a secret.
+# Each line is a gitleaks fingerprint: <commit>:<file>:<rule>:<line>.
+# A new finding is never covered by this file; it must be checked on its own.
+
+# A shell variable reference in a curl command. The line holds no value.
+63ee26b73806b3615ae3df26b6deaafbcbecf7d0:scripts/setup-stripe-products.sh:curl-auth-user:67
+
+# A placeholder in a documentation example.
+7296fc7d4d250427c2eea03666cbcce7aebc03bb:docs/QUICKSTART.md:curl-auth-header:259
+
+# A placeholder in a documentation example.
+77c39197ef4140db5e1a8c8fba96d9f74dcc2ad6:docs/superpowers/plans/2026-03-21-launch-readiness-fixes.md:curl-auth-user:338
+
+# The landing page's publishable sign-up identifier (role "anon"). It is sent to
+# every visitor's browser by design, so it was never private.
+57d7caf3bb00121373e13811e310fb699a56836a:landing-page/index.html:jwt:615
