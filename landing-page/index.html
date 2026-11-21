@@ -387,12 +387,12 @@
     line-height: 1.6;
   }
 
-  /* EMAIL CAPTURE */
-  .email-section {
+  /* UPDATES */
+  .updates-section {
     padding: 100px 0;
     text-align: center;
   }
-  .email-section h2 {
+  .updates-section h2 {
     font-family: 'DM Serif Display', Georgia, serif;
     font-size: 40px;
     font-weight: 400;
@@ -400,37 +400,11 @@
     letter-spacing: -0.5px;
     color: var(--navy);
   }
-  .email-section p {
+  .updates-section p {
     color: var(--ink-muted); font-size: 17px;
     margin-bottom: 40px; max-width: 480px;
     margin-left: auto; margin-right: auto;
     line-height: 1.6;
-  }
-  .email-form {
-    display: flex; gap: 12px;
-    justify-content: center;
-    max-width: 480px;
-    margin: 0 auto;
-    flex-wrap: wrap;
-  }
-  .email-form input {
-    flex: 1; min-width: 240px;
-    padding: 14px 18px;
-    border-radius: 7px;
-    border: 1px solid var(--cream-border);
-    background: var(--surface);
-    color: var(--ink);
-    font-size: 15px;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-    box-shadow: var(--shadow-xs);
-  }
-  .email-form input:focus { border-color: var(--accent); }
-  .email-form input::placeholder { color: var(--ink-faint); }
-  .email-note {
-    font-size: 13px; color: var(--ink-faint);
-    margin-top: 14px;
   }
 
   /* FOOTER */
@@ -812,16 +786,14 @@
   </div>
 </section>
 
-<section class="email-section" id="get-access">
+<section class="updates-section" id="get-access">
   <div class="container">
     <div class="section-label">Updates</div>
     <h2>Stay in the loop</h2>
-    <p>Get notified about new releases and security advisories.</p>
-    <form class="email-form" id="waitlist-form" onsubmit="handleSubmit(event)">
-      <input type="email" id="email-input" placeholder="you@company.com" required>
-      <button type="submit" class="btn-primary" id="submit-btn">Notify Me</button>
-    </form>
-    <p class="email-note" id="form-note">No spam. Updates only.</p>
+    <p>Follow releases and security advisories on GitHub: choose Watch, then Custom, then Releases and Security alerts.</p>
+    <div class="cta-group">
+      <a href="https://github.com/AnobleSCM/mcp-zero-trust-proxy" class="btn-primary" target="_blank" rel="noopener">Follow on GitHub</a>
+    </div>
   </div>
 </section>
 
@@ -830,54 +802,6 @@
     <p>MCP Zero-Trust Proxy &copy; 2026 &nbsp;·&nbsp; <a href="mailto:support@mcpzerotrust.dev" style="color: var(--ink-faint); text-decoration: none;">support@mcpzerotrust.dev</a> &nbsp;·&nbsp; Built by developers, for developers who don't want to get breached.</p>
   </div>
 </footer>
-
-<script>
-const SUPABASE_URL = 'https://dwumoznjyckebuirghne.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3dW1vem5qeWNrZWJ1aXJnaG5lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NzkxNDQsImV4cCI6MjA4OTU1NTE0NH0.75b5Ej67DkJx3ZSt5tFYec4Wn6_iSsXNsFJ7kNWxtKQ';
-
-async function handleSubmit(e) {
-  e.preventDefault();
-  const email = document.getElementById('email-input').value;
-  const btn = document.getElementById('submit-btn');
-  const note = document.getElementById('form-note');
-
-  btn.textContent = 'Joining...';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ email, source: 'landing-page' })
-    });
-
-    if (res.ok) {
-      btn.textContent = '\u2713 You\'re on the list!';
-      btn.style.background = '#4a7c59';
-      note.textContent = `We'll notify ${email} when the beta is ready.`;
-      document.getElementById('email-input').disabled = true;
-    } else if (res.status === 409) {
-      btn.textContent = 'Already signed up!';
-      btn.style.background = '#8b6914';
-      note.textContent = `${email} is already on the waitlist.`;
-      btn.disabled = false;
-    } else {
-      throw new Error('Signup failed');
-    }
-  } catch (err) {
-    btn.textContent = 'Try again';
-    btn.style.background = '#8b3a3a';
-    btn.disabled = false;
-    note.textContent = 'Something went wrong. Please try again.';
-  }
-}
-
-</script>
 
 </body>
 </html>
