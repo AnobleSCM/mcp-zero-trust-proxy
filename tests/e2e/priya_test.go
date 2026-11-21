@@ -1,16 +1,53 @@
 package e2e
 
 import (
+	"context"
 	"fmt"
+	"os"
 	"os/exec"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
+	"time"
 )
 
+// repoRoot finds the repository root by walking up from this source file to go.mod.
+func repoRoot(t *testing.T) string {
+	t.Helper()
+	_, file, _, ok := runtime.Caller(0)
+	if !ok {
+		t.Fatal("cannot locate test source file")
+	}
+	dir := filepath.Dir(file)
+	for {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			return dir
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			t.Fatalf("go.mod not found above %s", filepath.Dir(file))
+		}
+		dir = parent
+	}
+}
+
 func TestPriya_DockerBuild(t *testing.T) {
+	// Skip cleanly when Docker is missing or its daemon is not running.
+	if _, err := exec.LookPath("docker"); err != nil {
+		t.Skip("docker not installed")
+	}
+	infoCtx, cancelInfo := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancelInfo()
+	if err := exec.CommandContext(infoCtx, "docker", "info").Run(); err != nil {
+		t.Skipf("docker daemon not available: %v", err)
+	}
+
 	// Build Docker image and check size
-	cmd := exec.Command("docker", "build", "-t", "mcp-proxy-e2e-test", ".")
-	cmd.Dir = "/Users/andrewnoble/Developer/mcp-zero-trust-proxy"
+	buildCtx, cancelBuild := context.WithTimeout(context.Background(), 5*time.Minute)
+	defer cancelBuild()
+	cmd := exec.CommandContext(buildCtx, "docker", "build", "-t", "mcp-proxy-e2e-test", ".")
+	cmd.Dir = repoRoot(t)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		record(finding{Persona: "priya", Category: "fail", Summary: "Docker build failed", Detail: string(out)})
@@ -29,7 +66,7 @@ func TestPriya_DockerBuild(t *testing.T) {
 	}
 
 	// Cleanup
-	exec.Command("docker", "rmi", "mcp-proxy-e2e-test").Run()
+	exec.Command("docker", "rmi", "mcp-proxy-e2e-test").Run() //nolint:errcheck
 }
 
 func TestPriya_RBACAdminVsReadonly(t *testing.T) {

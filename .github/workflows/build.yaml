@@ -71,12 +71,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Docker image
-        env:
-          COMMIT_SHA: ${{ github.sha }}
-        run: |
-          VERSION="${COMMIT_SHA:0:8}"
-          docker build --build-arg VERSION="${VERSION}" -t mcpzerotrust/proxy:ci .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image for linux/amd64 and linux/arm64 (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: false
+          build-args: |
+            VERSION=${{ github.sha }}
+
+      - name: Build image for the smoke test
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          push: false
+          tags: mcpzerotrust/proxy:ci
+          build-args: |
+            VERSION=${{ github.sha }}
 
       - name: Smoke test container
         run: |

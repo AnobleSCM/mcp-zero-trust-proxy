@@ -48,17 +48,20 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/}"
           echo "TAG=${TAG}" >> "$GITHUB_OUTPUT"
 
-      - name: Build and push Docker image
-        env:
-          RELEASE_TAG: ${{ steps.tag.outputs.TAG }}
-        run: |
-          docker build \
-            --build-arg VERSION="${RELEASE_TAG}" \
-            -t "ghcr.io/anoblescm/mcp-zero-trust-proxy:${RELEASE_TAG}" \
-            -t "ghcr.io/anoblescm/mcp-zero-trust-proxy:latest" \
-            .
-          docker push "ghcr.io/anoblescm/mcp-zero-trust-proxy:${RELEASE_TAG}"
-          docker push "ghcr.io/anoblescm/mcp-zero-trust-proxy:latest"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push multi-platform Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            VERSION=${{ steps.tag.outputs.TAG }}
+          tags: |
+            ghcr.io/anoblescm/mcp-zero-trust-proxy:${{ steps.tag.outputs.TAG }}
+            ghcr.io/anoblescm/mcp-zero-trust-proxy:latest
 
   release-binary:
     name: Build and publish release binaries
